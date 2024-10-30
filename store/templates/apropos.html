@@ -1,0 +1,87 @@
+{% extends 'index.html' %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animation de Texte</title>
+    <!-- <link rel="stylesheet" href="style.css"> -->
+    <style type="text/css">
+        body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.text-container {
+    text-align: center;
+}
+
+.text-item {
+    opacity: 0;
+    font-size: 24px;
+    margin: 10px 0;
+    transition: opacity 1s ease-in-out;
+}
+
+    </style>
+</head>
+<body>
+    {% block content %}
+    <div class="text-container" width="100%" style="font-family:Arial bold">
+        <p class="text-item"><strong>
+            Apropos de notre Commerce
+        </strong></p>
+        <p class="text-item">
+            Ny site internet ny compagny misy anay dia manana ny logo mampiavaka azy sady mora fantarina... ny namorona azy dia i Tojo... specialiste amin'ny resaka  langage python...
+        </p>
+        <p class="text-item">Rehefa mividy ato amin'ny site dia raha ohatra  ka manana olana dia aza misalasala miantso ny numéro 0348808498 na mandefa hafatra mivantana amin adresse email:tojoalbertophysicien@gmail.com</p>
+        <p class="text-item">Eto ampamaranana dia ny fanaovana livraison dia atao colis na mivantana eto antananarivo...raha any amin'ny faritra kosa dia misy transport logistique na colis.....mankasitraka anao</p>
+    </div>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", () => {
+    const texts = document.querySelectorAll(".text-item");
+    const animationDuration = 1000; // Durée de l'apparition (en ms)
+    const delayBetweenTexts = 1000; // Délai entre chaque texte (en ms)
+    const delayBeforeRestart = 2000; // Délai avant de redémarrer l'animation (en ms)
+
+    function animateTexts() {
+        let delay = 0;
+
+        // Affiche les textes un par un
+        texts.forEach((text, index) => {
+            setTimeout(() => {
+                text.style.opacity = 1;
+            }, delay);
+            delay += delayBetweenTexts;
+        });
+
+        // Cache les textes un par un après l'animation complète
+        setTimeout(() => {
+            let hideDelay = 0;
+            texts.forEach((text) => {
+                setTimeout(() => {
+                    text.style.opacity = 0;
+                }, hideDelay);
+                hideDelay += delayBetweenTexts;
+            });
+        }, delay + delayBeforeRestart);
+
+        // Redémarre l'animation après que tous les textes aient été cachés
+        setTimeout(animateTexts, delay + delayBeforeRestart + (texts.length * delayBetweenTexts));
+    }
+
+    // Lance l'animation initiale
+    animateTexts();
+});
+
+
+    </script>
+{% endblock %}
+</body>
+</html>

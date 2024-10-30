@@ -1,14 +1,14 @@
 
 from pathlib import Path
 import os
+from dotenv import load_dotenv
 
-# from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 #load our environement variable
-# load_dotenv()
+load_dotenv()
 
 
 # Quick-start development settings - unsuitable for production
@@ -81,7 +81,14 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
-    }
+        # 'ENGINE': 'django.db.backends.postgresql',
+        # 'NAME':'railway',
+        # 'USER':'postgres',
+        # 'PASSWORD':os.environ.get('BD_PASSWORD_YO'), 
+        # 'HOST':'postgres.railway.internal',
+        # 'PORT':'5432',
+
+    } 
 }
 
 

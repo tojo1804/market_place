@@ -1,0 +1,172 @@
+{% extends 'index.html' %}
+{% load static %}
+<style type="text/css">
+    .no-margin {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+</style>
+        
+{% block content %}
+
+
+<div class="container mt-5">
+    <h4>IREO ZAVATRA HO COMMANDINAO SY HO VIDINAO</h4>
+    <div class="row g-4">
+    {% if cart_products %}
+        {% for product in cart_products %}
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <img src="{{product.image.url}}" class="card-img-top" alt="Produit 1" style="width:300px">
+                <div class="row justify_content-center">
+                    <div class="col-md-2">Quantité:</div>
+                    <div class="col-md-2">
+                    <select class="form-select form-select-sm"  id="select{{product.id}}">
+                           '4':3,'2':4}
+                        {% for key,value in quantities.items%}
+                            {% if key == product.id|slugify %}
+                               <option selected> {{ value}}</option> 
+                            {% endif %}
+                        {% endfor %} 
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option> 
+                      <option value="4">4</option>
+                      <option value="5">5</option>
+                    </select>
+                    </div>
+                </div> 
+                
+                <div class="card-body">
+                {% if product.is_sale %}
+                    <h5 class="card-title">{{product.name}}</h5>
+                    <p class="card-text">{{product.description}}</p>
+                    <p class="card-text">{{product.sale_price}}Ar</p> 
+                    <strike>{{product.price}} ar</strike><br>
+                    <a href="{% url 'home' %}" class="btn btn-primary">Home</a>
+                    <!-- <a href="#" class="btn btn-success" data-index="{{product.id}}" id="" >Update</a> -->
+                    <button type="button" class="btn btn-success update-cart" data-index="{{product.id}}">Modifier</button>
+                    <button  type="button" data-index="{{product.id}}" class="btn btn-danger delete-product" >Sumprimer</button>
+                    
+                {% else %}
+                    <h5 class="card-title">{{product.name}}</h5>
+                    <p class="card-text">{{product.description}}</p>
+                    <p class="card-text">{{product.price}}Ar</p> 
+                    <!-- <strike>{{product.sale_price}}</strike> -->
+                    <a href="{% url 'home' %}" class="btn btn-primary">Home</a>
+                    <!-- <a href="#" class="btn btn-success" data-index="{{product.id}}" id="" >Update</a> -->
+                    <button type="button" class="btn btn-success update-cart" data-index="{{product.id}}">Modifier</button>
+                    <button  type="button" data-index="{{product.id}}" class="btn btn-danger delete-product" >Sumprimer</button>
+
+
+                {% endif %}
+                </div>
+                
+                
+                
+
+            </div>
+        </div>    
+        {% endfor %}
+
+    {% else %}
+    <h1>
+        <div class="alert alert-success" role="alert">
+              IL N'Y A PAS DE PRODUIT DANS VOTRE PANIER.....COMMANDER ET CHOISISEZ AU PAGE D'ACCUEIL
+              <a href="{% url 'home' %}" class="btn btn-primary">accueil</a>
+        </div>
+
+    </h1>
+    {% endif %}
+    
+    </div>
+</div><br>
+<div align="right" >
+            <center><h3>Total:{{totals}} <strong>Ar</strong></h3></center>
+           <a href="{% url 'checkout' %}" class="btn btn-success" >Verifier</a>
+ </div><br><br>
+
+<!-- update cart -->
+<script type="text/javascript">
+// check if buuton pressed
+  $(document).on('click','.update-cart',function(e){
+    e.preventDefault(); 
+    // grabe the product id
+    var productid =$(this).data('index'); 
+    $.ajax({
+      type: 'POST',
+      url:'{% url 'cart_update' %}',
+      data:{
+        product_id: $(this).data('index'),
+        product_qty:$('#select'+ productid + ' option:selected').
+        text(),
+        csrfmiddlewaretoken:'{{ csrf_token }}',
+        action:'post'
+
+      },
+      success: function(json){
+        console.log(json)
+        // document.getElementById("cart_quantity").textContent = json.qty
+        location.reload();
+
+      },
+      error:function(xhr,errmsg,err){
+
+      }
+
+    });
+  })
+
+
+// delete
+
+// check if buuton pressed
+  $(document).on('click','.delete-product',function(e){
+    e.preventDefault(); 
+    // grabe the product id
+    // var productid =$(this).data('index'); 
+    $.ajax({
+      type: 'POST',
+      url:'{% url 'cart_delete' %}',
+      data:{
+        product_id: $(this).data('index'),
+        // product_qty:$('#select'+ productid + ' option:selected').
+        // text(),
+        csrfmiddlewaretoken:'{{ csrf_token }}',
+        action:'post'
+
+      },
+      success: function(json){
+        console.log(json)
+        // document.getElementById("cart_quantity").textContent = json.qty
+        location.reload();
+      },
+      error:function(xhr,errmsg,err){
+
+      }
+
+    });
+  })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
+{% endblock %}

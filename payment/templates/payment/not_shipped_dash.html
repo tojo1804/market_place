@@ -1,0 +1,46 @@
+{% extends 'index.html' %}
+{% block content %}
+<div class="container">
+	<div class="row">
+		<center>
+			<div class="col-8">
+				<h1>varotre mbola tsy raikitra</h1>
+				
+				<table class="table table-bordered">
+				  <thead>
+				    <tr>
+				      <th scope="col">commande</th>
+				      <th scope="col">Prix</th>
+				      <th scope="col">client email</th>
+				      <th scope="col">date de clic</th>
+				      <th scope="col">status</th>
+				    </tr>
+				  </thead>
+				  <tbody>
+				  	{% for item in orders %}
+				    <tr>
+				      <td><a href="{% url 'orders' item.id %}">{{item.id}}</a></td>
+				      <td>{{item.amount_paid}} AR</td>
+				      <td>{{item.email}}</td>
+				      <td>{{item.date_ordered}}</td>
+				      <td>
+				      	<form method="POST">
+				      	{% csrf_token %}
+				      	<input type="hidden" name="shipping_status" value="true">
+				      	<input type="hidden" name="num" value="{{item.id}}">
+				      	<button type="submit" class="btn btn-success btn-sm " >Cocher</button>	
+				      	</form>
+				      </td>
+				    </tr>
+				    {% endfor %}
+				  </tbody>
+				</table>
+
+			</div>
+		</center>
+		
+	</div>
+	
+</div>
+
+{% endblock %}

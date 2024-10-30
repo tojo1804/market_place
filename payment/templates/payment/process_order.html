@@ -1,0 +1,86 @@
+{% extends 'index.html' %}
+{% load static %}
+
+</style>
+
+{% block content %}
+
+
+<div class="card">
+  <div class="card-header">
+    <strong>Commander</strong>
+  </div>
+  <div class="row">
+
+  {% for product in cart_products %}
+  <div class="col-md-4 mb-3">
+  <div class="card mb-3 custom-card" style="max-width: 540px; height: 100%;border:1px solid #ddd;">
+  <div class="row g-0 align-items-center h-100">
+    <div class="col-md-5">
+      <img src="{{product.image.url}}" class="img-fluid rounded-start" alt="..." style="width: 100%; height: 100%; object-fit: cover;">
+    </div>
+    <div class="col-md-7 d-flex align-items-start">
+      <div class="card-body">
+        <h5 class="card-title">{{product.name}}</h5>
+        <p class="card-text">{{product.description}}</p>
+        {% if product.is_sale %}
+        <p class="card-text">{{product.sale_price}} ar</p>
+        <strike>{{product.price}} ar</strike> &nbsp;
+        {% else %}
+        {{product.price}} ar
+        <p class="card-text">{{product.price}} ar</p>
+        {% endif %}<br> 
+        
+        quantité:
+        <small>{% for key,value in quantities.items%}
+            {% if key == product.id|slugify %}
+               {{ value}}
+            {% endif %}
+         {% endfor %}</small> <br>
+
+         <a href="{% url 'cart_summary' %}" class="btn btn-success">Modifier la Qté</a><br>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+{% endfor %}
+</div>
+</div>
+<div align="right" >
+           <center><h3>Total:{{totals}} <strong>Ar</strong></h3></center> 
+ </div><br><br>
+
+ <div class="card">
+  <div class="card-header">
+    Information de facturation:
+  </div>
+  <div class="card mb-3 custom-card" style="max-width: 540px; height: 100%;border:1px solid #ddd;margin-left:10px;">
+  <div class="card-body">  
+    {{shipping_info.shipping_full_name}}<br>
+    {{shipping_info.shipping_email}}<br>
+    {{shipping_info.shipping_address1}}<br>
+    {{shipping_info.shipping_country}}
+  </div>
+  </div>
+</div>
+
+<br>
+<center>
+<div class="card">
+  <div class="card-header">
+   <strong>Information de client</strong> 
+  </div>
+  <div class="card mb-3 custom-card" style="max-width: 540px; height: 100%;border:1px solid #ddd;margin-left:10px;">
+  <div class="card-body">  
+    <form method="POST" action="{% url 'process_order' %}">
+    {% csrf_token %}
+    {{billing_form.as_p}}
+    <button type="submit" class="btn btn-primary" >Payer</button> 
+    </form>
+  </div>
+  </div>
+</div>
+
+</center>
+{% endblock %}  

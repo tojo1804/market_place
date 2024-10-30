@@ -1,0 +1,142 @@
+{% extends 'index.html' %}
+<style>
+  .custom-card {
+  display: flex;
+  max-width: 540px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.custom-card-img {
+  width: 40%;
+  object-fit: cover;
+}
+
+.custom-card-body {
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 60%;
+}
+
+.custom-card-title {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+
+.custom-card-text {
+  font-size: 1rem;
+  margin-bottom: 10px;
+}
+
+.custom-card-price {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #e74c3c;
+  margin-bottom: 15px;
+}
+
+
+
+
+
+</style>
+
+{% block content %}
+<br><br><br>
+{% if product.sale_price %}
+<div class="custom-card">
+  <div class="row g-1">
+    <div class="col-md-4">
+      <img src="{{product.image.url}}" class="custom-card-img" alt="..." width="400" >
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-title">{{product.name}}</h5>
+        <p class="card-text">{{product.description}}</p>
+        <p class="card-text">{{product.sale_price}} ar</p>
+        <strike>{{product.price}} ar</strike> &nbsp;
+        <br> ID:{{product.id}}
+
+          <div class="form-group">
+            <label for="exampleSelect">Quantité:</label>
+            <select class="form-control-sm"  id="qty-cart">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option> 
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </div> 
+
+        <a href="{% url 'home' %}" class="btn btn-success" >Home</a>
+        <button type="button" value="{{ product.id }}" id="add-cart" class="btn btn-secondary" >Add to card</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% else %}
+<div class="custom-card">
+  <div class="row g-1">
+    <div class="col-md-4">
+      <img src="{{product.image.url}}" class="custom-card-img" alt="..." width="400" >
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-title">{{product.name}}</h5>
+        <p class="card-text">{{product.description}}</p>
+        <p class="card-text">{{product.price}} ar</p>
+        <!-- <strike>{{product.sale_price}} ar</strike> &nbsp; -->
+        <br> ID:{{product.id}}
+
+          <div class="form-group">
+            <label for="exampleSelect">Quantité:</label>
+            <select class="form-control-sm"  id="qty-cart">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option> 
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </div> 
+
+        <a href="{% url 'home' %}" class="btn btn-success" >Home</a>
+        <button type="button" value="{{ product.id }}" id="add-cart" class="btn btn-secondary" >Add to card</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endif %}
+<br></br><br><br>
+
+<script>
+  // check if buuton pressed
+  $(document).on('click','#add-cart',function(e){
+    e.preventDefault(); 
+    $.ajax({
+      type: 'POST',
+      url:'{% url 'cart_add' %}',
+      data:{
+        product_id: $('#add-cart').val(), 
+        product_qty:$('#qty-cart option:selected').
+        text(),
+        csrfmiddlewaretoken:'{{ csrf_token }}',
+        action:'post'
+
+      },
+      success: function(json){
+        console.log(json)
+        document.getElementById("cart_quantity").textContent = json.qty
+        location.reload();
+      },
+      error:function(xhr,errmsg,err){
+
+      }
+
+    });
+  })
+</script>
+{% endblock %}
